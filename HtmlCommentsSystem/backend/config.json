@@ -1,0 +1,4 @@
+{
+    "postgres_dsn": "postgres://postgres:123@localhost:5400/html_comments?sslmode=disable",
+    "up_port": "8080"
+}

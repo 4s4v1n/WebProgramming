@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link href='https://fonts.googleapis.com/css?family=JetBrains Mono' rel='stylesheet'>
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <title>Савин Антон - о себе</title>
+</head>
+<body>
+    <h1>Антон Савин</h1>
+    <div class="main_container" id="main_container">
+        <div class="info_container" id="info_container">
+            <div class="box study_info">
+                <p>Я являюсь студентом 3 курса ФПМИ НГТУ. Изначально поступал на факультет радио
+                    электроники, но в последствии перевёлся. За время обучения смог полюбить высшую математику,
+                    в частности анализ. В будущем планирую заняться исследованиями в областях теории групп и
+                    теории категорий.</p>
+                <p>Параллельно обучению в университете, я обучаюсь в школе21. На текущий момент времени -
+                    дошёл до финального этапа. Вследствие чего, буду составлять первый выпуск из
+                    Новосибирского кампуса школы21.</p>
+                <p>Дополнительно ко всему вышеперечисленному, уже 1,5 года работаю системным разработчиком в
+                    компании Integra Sources, на позиции junior+/pre-middle C++/Qt разработчика.</p>
+                <p>Имею полугодовой опыт репетиторства для студентов ВШЭ ФКН по Qt и C++.</p>
+            </div>
+            <div class="box work_experience">
+                <p>За время 1,5 годовой опыт коммерческой разработки, я поучаствовал в релизе следующих продуктов.</p>
+                <ol>
+                    <li>Система парктроника для самолёта (C++/Qt/Qml)</li>
+                    <li>Приложения для контроля сбора тюков сена (C++/Qt/Qml/Aws)</li>
+                    <li>Высоко нагруженный платёжный агент, для оплаты коммунальных услуг (Go/Java/PostgresSQL)</li>
+                    <li>Приложение для кофе-обжарщика,
+                        дабы контролировать процесс обжарки нескольких тонн зерна (С++/Qt/Qml/SQLite)</li>
+                </ol>
+            </div>
+            <div class="box skills">
+                <p>В процессе обучения и коммерческой разработки - я овладел следующими языками и технологиями.</p>
+                <ol>
+                    <li>С/С++</li>
+                    <li>Golang</li>
+                    <li>PostgresSQL</li>
+                    <li>Java/Jmix</li>
+                    <li>Docker/Docker-compose</li>
+                    <li>Python/Numpy</li>
+                    <li>Пониманием различных архитектурных решений, их плюсов и минусов</li>
+                    <li>Спецификой разработки кросс-платформенного ПО</li>
+                </ol>
+                <p>С моими учебными проектами можно ознакомиться более подробно тут:
+                    <a href="https://github.com/sav1nbrave4code">Github</a>
+                </p>
+            </div>
+            <div class="box future">
+                <p>Своё будущее я вижу следующим образом. В ближайший год-два я ухожу в новое для себя направление, одно
+                    из нижеперечисленных</p>
+                <ol>
+                    <li>Анализ данных</li>
+                    <li>Машинное обучение</li>
+                    <li>Архитектор баз данных</li>
+                </ol>
+                <p>После, к 30ти годам, имея пассивный заработок - ухожу в науку,
+                    в область исследования теории групп и категорий</p>
+            </div>
+            <div class="box contacts">
+                <a href="https://vk.com/asav1n">
+                    <img style="margin-right:15px"
+                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/VK.com-logo.svg/2048px-VK.com-logo.svg.png"
+                         width="50px"  alt="vk"/>
+                </a>
+                &nbsp;&nbsp;
+                <a href="https://t.me/trelogika" target="_blank" style='margin-right:10px'>
+                    <img style="margin-right:5px"
+                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Telegram_2019_Logo.svg/512px-Telegram_2019_Logo.svg.png"
+                         width="50px"  alt="tg"/>
+                </a>
+                &nbsp;&nbsp;
+                <a href="mailto:va.sav1n1a2b3c@gmail.com" target="_blank" >
+                    <img style="margin-right:15px"
+                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Gmail_icon_%282020%29.svg/800px-Gmail_icon_%282020%29.svg.png"
+                         width="50px" alt="mail"/>
+                </a>
+            </div>
+        </div>
+        <div class="image_and_comments_container" id="image_and_comments_container">
+            <script type="text/javascript" src="index.js"></script>
+            <div class="image_container">
+                <img src="images/profile.jpg" alt="profile">
+            </div>
+            <div class="comment_block" id="commentsBlock">
+                <p>Добавьте свой комментарий</p>
+                <br/>
+                Имя:
+                <label for="nameInput"></label><input type="text" name="name" id="nameInput">
+                <br/>
+                <br/>
+                Комментарий:
+                <label for="messageInput"></label><textarea id="messageInput" rows="5" cols="30"></textarea>
+                <br/>
+                <br/>
+                <button id="addCommentButton" class="add_comment_button">Добавить</button>
+            </div>
+        </div>
+    </div>
+<header></header>
+</body>
+</html>
