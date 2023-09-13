@@ -10,8 +10,7 @@ const (
 )
 
 type User struct {
-	Id   uint64  `json:"id" goqu:"skipinsert"`
-	Name *string `json:"name"`
+	Name string `json:"name" db:"name"`
 }
 
 func (db *DataBase) AddUser(item User) error {
@@ -23,4 +22,17 @@ func (db *DataBase) AddUser(item User) error {
 		return fmt.Errorf("insert data: %w", err)
 	}
 	return nil
+}
+
+func (db *DataBase) IsUserExist(item User) (bool, error) {
+	selectQuery, _, err := goqu.From(usersTable).Where(goqu.C("name").Eq(item.Name)).ToSQL()
+	if err != nil {
+		return false, fmt.Errorf("configure query: %w", err)
+	}
+
+	var users []User
+	if err = db.DB.Select(&users, selectQuery); err != nil {
+		return false, fmt.Errorf("select data: %w", err)
+	}
+	return users != nil, nil
 }

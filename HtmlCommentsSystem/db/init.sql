@@ -1,16 +1,15 @@
 CREATE TABLE IF NOT EXISTS users
 (
-    id   SERIAL PRIMARY KEY,
-    name TEXT   NOT NULL
+    name TEXT PRIMARY KEY
 );
 
 CREATE TABLE IF NOT EXISTS comments
 (
-    id      SERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL,
-    message TEXT   NOT NULL,
+    id        SERIAL PRIMARY KEY,
+    user_name TEXT   NOT NULL,
+    message   TEXT   NOT NULL,
 
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    FOREIGN KEY (user_name) REFERENCES users (name)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );

@@ -1,0 +1,13 @@
+###
+# @name Get comments
+GET http://localhost:8080/api/comments
+
+###
+# @name Add comment
+POST http://localhost:8080/api/comments
+Content-Type: application/json
+
+{
+    "user_name": "Anton",
+    "message": "Good page"
+}

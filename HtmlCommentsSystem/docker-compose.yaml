@@ -31,4 +31,17 @@ services:
     networks:
       - dev-network
     depends_on:
+      - backend
+
+  backend:
+    container_name: html_comment_system_backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    restart: always
+    networks:
+      - dev-network
+    depends_on:
       - db

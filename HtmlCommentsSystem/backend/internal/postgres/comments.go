@@ -6,13 +6,13 @@ import (
 )
 
 const (
-	commentsTable = "users"
+	commentsTable = "comments"
 )
 
 type Comment struct {
-	Id      uint64  `json:"id" goqu:"skipinsert"`
-	UserId  *uint64 `json:"user_id"`
-	Message *string `json:"name"`
+	Id       uint64  `json:"id,omitempty" db:"id" goqu:"skipinsert"`
+	UserName *string `json:"user_name" db:"user_name"`
+	Message  *string `json:"message" db:"message"`
 }
 
 func (db *DataBase) AddComment(item Comment) error {
@@ -37,4 +37,22 @@ func (db *DataBase) GetComments() ([]Comment, error) {
 		return nil, fmt.Errorf("select data: %w", err)
 	}
 	return comments, nil
+}
+
+func (db *DataBase) DeleteComment(item Comment) error {
+	deleteQuery, _, err := goqu.Delete(commentsTable).Where(goqu.And(
+		goqu.C("user_name").Eq(item.UserName),
+		goqu.C("message").Eq(item.Message))).
+		Returning("id").ToSQL()
+	if err != nil {
+		return fmt.Errorf("configure query: %w", err)
+	}
+
+	var id string
+	row := db.DB.QueryRowx(deleteQuery)
+
+	if err = row.Scan(&id); err != nil {
+		return fmt.Errorf("delete data: %w", err)
+	}
+	return nil
 }
