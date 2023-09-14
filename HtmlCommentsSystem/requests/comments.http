@@ -9,5 +9,9 @@ Content-Type: application/json
 
 {
     "user_name": "Anton",
-    "message": "Good page"
+    "message": "Good"
 }
+
+###
+# @name Check that comment exist
+GET http://localhost:8080/api/comments/exist?user_name=Anton@message=Good
