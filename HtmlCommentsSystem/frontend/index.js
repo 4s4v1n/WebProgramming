@@ -12,10 +12,10 @@ let lastAuthorizedUser = null
 window.onload = async () => {
     document.getElementById("addCommentButton").addEventListener("click", addCommentAction)
 
-    let json
-    do {
-         json = await getCommentsRequest()
-    } while (json === null)
+    let json = await getCommentsRequest()
+    if (json === undefined) {
+        return
+    }
 
     json.forEach((comment) => {
         addCommentHtml(comment[userNameKey], comment[messageKey])
@@ -27,7 +27,7 @@ async function getCommentsRequest() {
 
     if (!response.ok) {
         console.warn("cannot get comments from db")
-        return null
+        return undefined
     }
     return await response.json()
 }
@@ -55,6 +55,20 @@ async function addCommentRequest(name, message) {
             console.warn("cannot add user")
             return false
         }
+    }
+
+    response = await fetch(commentsLocation+"/exist?" + new URLSearchParams({
+        "user_name": name,
+        "message": message
+    }))
+    if (!response.ok) {
+        console.warn("cannot check if comment exist")
+        return false
+    }
+
+    json = await response.json()
+    if (json[existKey]) {
+        return false
     }
 
     response = await fetch(commentsLocation, {

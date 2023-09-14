@@ -10,7 +10,9 @@ import (
 )
 
 const (
-	userQueryParam = "user"
+	userQueryParam     = "user"
+	usernameQueryParam = "user_name"
+	messageQueryParam  = "message"
 )
 
 var db *postgres.DataBase
@@ -31,13 +33,16 @@ func New() *chi.Mux {
 
 	mux.Route("/api", func(r chi.Router) {
 		r.Route("/users", func(r chi.Router) {
-			r.Get("/exist", isUserExist)
 			r.Post("/", addUser)
+
+			r.Get("/exist", isUserExist)
 		})
 		r.Route("/comments", func(r chi.Router) {
 			r.Get("/", getComments)
 			r.Post("/", addComment)
 			r.Delete("/", deleteComment)
+
+			r.Get("/exist", isCommentExist)
 		})
 	})
 
@@ -131,4 +136,37 @@ func deleteComment(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
+}
+
+func isCommentExist(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	query := r.URL.Query()
+	if !query.Has(usernameQueryParam) {
+		WriteError(w, errors.New(`missing query parameter "user_name"`), http.StatusBadRequest)
+		return
+	}
+	if !query.Has(messageQueryParam) {
+		WriteError(w, errors.New(`missing query parameter "message"`), http.StatusBadRequest)
+		return
+	}
+
+	username := query.Get(usernameQueryParam)
+	message := query.Get(messageQueryParam)
+	exist, err := db.IsCommentExist(postgres.Comment{
+		UserName: &username,
+		Message:  &message,
+	})
+	if err != nil {
+		WriteError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	resp := struct {
+		Exist bool `json:"exist"`
+	}{
+		Exist: exist,
+	}
+
+	WriteResponseJson(w, resp)
 }

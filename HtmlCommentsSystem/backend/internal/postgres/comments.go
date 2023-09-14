@@ -56,3 +56,18 @@ func (db *DataBase) DeleteComment(item Comment) error {
 	}
 	return nil
 }
+
+func (db *DataBase) IsCommentExist(item Comment) (bool, error) {
+	selectQuery, _, err := goqu.From(commentsTable).Where(goqu.And(
+		goqu.C("user_name").Eq(item.UserName),
+		goqu.C("message").Eq(item.Message))).ToSQL()
+	if err != nil {
+		return false, fmt.Errorf("configure query: %w", err)
+	}
+
+	var comments []Comment
+	if err = db.DB.Select(&comments, selectQuery); err != nil {
+		return false, fmt.Errorf("select data: %w", err)
+	}
+	return comments != nil, nil
+}
