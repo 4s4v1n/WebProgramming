@@ -3,8 +3,15 @@ const input = document.getElementById("todo-input");
 const todoLane = document.getElementById("todo-lane");
 const inProgressLane = document.getElementById("in-progress-lane")
 const doneLane =  document.getElementById("done-lane")
+const user = localStorage.getItem("user")
 
 window.onload = async () => {
+    // prevent not logged user to use (idk default value)
+    if (!user || user === "undefined" || user === null || user === "null" || user === "") {
+        window.location.replace("./")
+        return
+    }
+
     addTaskHtml("Anton", "Get groceries", "todo")
     addTaskHtml("Anton", "Feed the dogs", "todo")
     addTaskHtml("Anton", "Mow the lawn", "todo")
@@ -19,20 +26,19 @@ form.addEventListener("submit", (e) => {
 
     if (!value) return;
 
-    addTaskHtml("Anton", value, "todo")
+    addTaskHtml(user, value, "todo")
     input.value = "";
 });
 
-const addTaskHtml = (author, description, group) => {
-    if (!description) return
+form.addEventListener("reset", (e) => {
+    e.preventDefault();
 
-    const deleteButton = document.createElement("button")
-    deleteButton.classList.add("delete-button")
-    deleteButton.setAttribute("type", "submit")
-    deleteButton.innerText = "delete"
-    deleteButton.addEventListener("click", () => {
-        console.log("clicked delete")
-    })
+    localStorage.setItem("user", undefined)
+    window.location.replace("./")
+})
+
+const addTaskHtml = (author, description, group) => {
+    if (!description || !author || !group) return
 
     const authorContainer = document.createElement("h4")
     authorContainer.innerText = author
@@ -40,22 +46,37 @@ const addTaskHtml = (author, description, group) => {
     const bottomContainer = document.createElement("div")
     bottomContainer.classList.add("task-bottom")
     bottomContainer.appendChild(authorContainer)
-    bottomContainer.appendChild(deleteButton)
+
+    if (author === user) {
+        const deleteButton = document.createElement("button")
+        deleteButton.classList.add("delete-button")
+        deleteButton.setAttribute("type", "submit")
+        deleteButton.innerText = "delete"
+        deleteButton.addEventListener("click", () => {
+            newTask.remove()
+        })
+
+        bottomContainer.appendChild(deleteButton)
+    }
 
     const descriptionContainer = document.createElement("p")
     descriptionContainer.innerText = description;
 
     const newTask = document.createElement("div")
     newTask.classList.add("task")
-    newTask.setAttribute("draggable", "true")
     newTask.appendChild(descriptionContainer)
     newTask.appendChild(bottomContainer)
-    newTask.addEventListener("dragstart", () => {
-        newTask.classList.add("is-dragging");
-    });
-    newTask.addEventListener("dragend", () => {
-        newTask.classList.remove("is-dragging");
-    });
+
+    if (user === author) {
+        newTask.setAttribute("draggable", "true")
+        newTask.addEventListener("dragstart", () => {
+            newTask.classList.add("is-dragging");
+        });
+        newTask.addEventListener("dragend", () => {
+            newTask.classList.remove("is-dragging");
+        });
+        newTask.style.cursor = "move"
+    }
 
     switch (group) {
         case "todo": {
