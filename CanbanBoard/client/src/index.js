@@ -5,6 +5,10 @@ const inProgressLane = document.getElementById("in-progress-lane")
 const doneLane =  document.getElementById("done-lane")
 const user = localStorage.getItem("user")
 
+const todoCategory = "todo"
+const inProgressCategory = "in progress"
+const doneCategory = "done"
+
 window.onload = async () => {
     // prevent not logged user to use (idk default value)
     if (!user || user === "undefined" || user === null || user === "null" || user === "") {
@@ -14,7 +18,7 @@ window.onload = async () => {
 
     let resp = await fetch("http://localhost:8080/api/tasks")
     if (!resp.ok) {
-        console.error("error while fetch all tasks", resp)
+        window.alert("error while fetch all tasks")
     }
 
     let json = await resp.json()
@@ -23,13 +27,17 @@ window.onload = async () => {
     })
 }
 
-form.addEventListener("submit", (e) => {
+form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const value = input.value;
 
     if (!value) return;
 
-    addTaskHtml(user, value, "todo")
+    if (await addTaskApi(user, value, todoCategory)) {
+        addTaskHtml(user, value, todoCategory)
+    } else {
+        window.alert("error while fetch all tasks")
+    }
     input.value = "";
 });
 
@@ -39,6 +47,45 @@ form.addEventListener("reset", (e) => {
     localStorage.setItem("user", undefined)
     window.location.replace("./")
 })
+
+const addTaskApi = async (user, description, category) => {
+    if (!user || !description) return
+
+    let resp = await fetch("http://localhost:8080/api/tasks", {
+        method: "POST",
+        body: JSON.stringify({
+            "user": user,
+            "description": description,
+            "category": category
+        })
+    })
+    return resp.ok
+}
+
+const deleteTaskApi = async (user, description) => {
+    if (!user || !description) return
+
+    let resp = await fetch("http://localhost:8080/api/tasks?" + new URLSearchParams({
+        "user": user,
+        "description": description
+    }), {
+        method: "DELETE"
+    })
+    return resp.ok
+}
+
+const updateTaskApi = async (user, description, category) => {
+    if (!user || !description || !category) return
+
+    let resp = await fetch("http://localhost:8080/api/tasks?" + new URLSearchParams({
+        "user": user,
+        "description": description,
+        "category": category,
+    }), {
+        method: "PATCH"
+    })
+    return resp.ok
+}
 
 const addTaskHtml = (author, description, group) => {
     if (!description || !author || !group) return
@@ -55,8 +102,12 @@ const addTaskHtml = (author, description, group) => {
         deleteButton.classList.add("delete-button")
         deleteButton.setAttribute("type", "submit")
         deleteButton.innerText = "delete"
-        deleteButton.addEventListener("click", () => {
-            newTask.remove()
+        deleteButton.addEventListener("click", async () => {
+            if (await deleteTaskApi(user, description)) {
+                newTask.remove()
+            } else {
+                window.alert("cannot delete task")
+            }
         })
 
         bottomContainer.appendChild(deleteButton)
@@ -76,28 +127,29 @@ const addTaskHtml = (author, description, group) => {
             newTask.classList.add("is-dragging");
         });
         newTask.addEventListener("dragend", () => {
+            if (!updateTaskApi(user, description, newTask.parentElement.getAttribute("category"))) {
+                window.alert("cannot change task category")
+            }
             newTask.classList.remove("is-dragging");
-        });
+        })
         newTask.style.cursor = "move"
     }
 
-    console.log(group)
-
     switch (group) {
-        case "todo": {
+        case todoCategory: {
             todoLane.appendChild(newTask)
             break
         }
-        case "in progress": {
+        case inProgressCategory: {
             inProgressLane.appendChild(newTask)
             break
         }
-        case "done": {
+        case doneCategory: {
             doneLane.appendChild(newTask)
             break
         }
         default: {
-            console.warn("unknown group")
+            window.alert("unknown group")
             break
         }
     }
