@@ -12,12 +12,15 @@ window.onload = async () => {
         return
     }
 
-    addTaskHtml("Anton", "Get groceries", "todo")
-    addTaskHtml("Anton", "Feed the dogs", "todo")
-    addTaskHtml("Anton", "Mow the lawn", "todo")
+    let resp = await fetch("http://localhost:8080/api/tasks")
+    if (!resp.ok) {
+        console.error("error while fetch all tasks", resp)
+    }
 
-    addTaskHtml("Anton", "Play WOW", "in progress")
-    addTaskHtml("Anton", "Drink beer", "done")
+    let json = await resp.json()
+    json.forEach((task) => {
+        addTaskHtml(task["user"], task["description"], task["category"])
+    })
 }
 
 form.addEventListener("submit", (e) => {
@@ -77,6 +80,8 @@ const addTaskHtml = (author, description, group) => {
         });
         newTask.style.cursor = "move"
     }
+
+    console.log(group)
 
     switch (group) {
         case "todo": {

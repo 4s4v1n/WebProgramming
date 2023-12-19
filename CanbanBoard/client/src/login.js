@@ -2,7 +2,7 @@ const form = document.getElementById("login-form");
 const nicknameInput = document.getElementById("login-nickname")
 const passwordInput = document.getElementById("login-pass")
 
-form.addEventListener("submit", (e) => {
+form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const nickname = nicknameInput.value
@@ -11,12 +11,19 @@ form.addEventListener("submit", (e) => {
     nicknameInput.value = "";
     passwordInput.value = ""
 
-    console.log(nickname, password)
+    let resp = await fetch("http://localhost:8080/api/users?" + new URLSearchParams({
+        "user": nickname
+    }))
+    if (!resp.ok) {
+        window.alert("wrong login or password")
+        return
+    }
 
-    // TODO here check correctness
-    // localStorage.setItem("user", undefined)
-    // window.alert("wrong login or password")
-    // return
+    let json = await resp.json()
+    if (json["password"] !== password) {
+        window.alert("wrong login or password")
+        return
+    }
 
     localStorage.setItem("user", nickname)
     window.location.replace("./board")
